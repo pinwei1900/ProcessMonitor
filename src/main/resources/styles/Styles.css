@@ -1,0 +1,57 @@
+.button {
+    -fx-font-weight: bold;
+}
+
+.text-area {
+
+    -fx-font-size: 14px;
+    -fx-font-family: Monospaced;
+    -fx-text-fill: yellow;
+    -fx-font-weight: bold;
+}
+
+.text-area .content {
+    -fx-background-color: black;
+}
+
+.text-field {
+    -fx-font-size: 14px;
+    -fx-font-family: Monospaced;
+    -fx-text-fill: yellow;
+    -fx-font-weight: bold;
+    -fx-background-color: black;
+}
+
+.tab-pane {
+    -fx-open-tab-animation: NONE;
+    -fx-close-tab-animation: NONE;
+}
+
+.btn {
+    -fx-border-width: 1px;
+    -fx-border-color: transparent;
+    -fx-border-radius: 4px;
+}
+
+.btn-default {
+    -fx-text-fill: #333;
+    -fx-background-color: #fff;
+    -fx-border-color: #ccc;
+}
+
+.btn-default:hover {
+    -fx-background-color: #e6e6e6;
+    -fx-border-color: #adadad;
+}
+
+.btn-success:hover {
+    -fx-text-fill: #fff;
+    -fx-background-color: #449d44;
+    -fx-border-color: #398439;
+}
+
+.btn-success {
+    -fx-text-fill: #fff;
+    -fx-background-color: #5cb85c;
+    -fx-border-color: #4cae4c;
+}
