@@ -42,7 +42,6 @@ public class DbService {
      */
     public static void main(String[] args) {
         createDB();
-        createDB();
     }
 
     public synchronized static DbService createDB(){
