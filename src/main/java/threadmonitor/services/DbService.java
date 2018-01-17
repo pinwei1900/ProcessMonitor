@@ -36,6 +36,19 @@ public class DbService {
         }
     }
 
+    /**
+     * 创建数据库
+     * @param args
+     */
+    public static void main(String[] args) {
+        createDB();
+        createDB();
+    }
+
+    public synchronized static DbService createDB(){
+        return new DbService();
+    }
+
     public synchronized void insertProsess(ObservableList<Progress> progresses) {
         try {
             String sql = "INSERT INTO prosessTable (time, value) VALUES ('" + Utils.dateToString(new Date()) + "','"+ JsonUtil.serialize(progresses) +"')";
@@ -79,9 +92,10 @@ public class DbService {
         String sql = "SELECT * FROM commandTabel;";
         try {
             List<Command> commands = sqliteHelper.executeQuery(sql,(resultSet, rowNum) -> {
+                        Integer id = resultSet.getInt(1);
                         String command = resultSet.getString(2);
                         String desc = resultSet.getString(3);
-                        return new Command(command,desc);
+                        return new Command(id,command,desc);
                     });
             return commands;
         } catch (SQLException e) {
@@ -90,5 +104,14 @@ public class DbService {
             e.printStackTrace();
         }
         return Collections.EMPTY_LIST;
+    }
+
+    public void delCommand(Integer id) {
+        try {
+            String sql = "DELETE FROM commandTabel WHERE id = " + id;
+            sqliteHelper.executeUpdate(sql);
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -58,7 +58,8 @@ public class TerminalTab extends Tab {
     private boolean isTerminalReady = false;
     private CountDownLatch countDownLatch = new CountDownLatch(1);
 
-    public TerminalTab(TerminalConfig terminalConfig, TabNameGenerator tabNameGenerator, Path terminalPath) {
+    public TerminalTab(TerminalConfig terminalConfig, TabNameGenerator tabNameGenerator,
+            Path terminalPath) {
         this.terminalConfig = terminalConfig;
         this.tabNameGenerator = tabNameGenerator;
         this.terminalPath = terminalPath;
@@ -92,9 +93,10 @@ public class TerminalTab extends Tab {
     public void initialize() {
         commandQueue = new LinkedBlockingQueue<>();
         webView = new WebView();
-        webView.getEngine().getLoadWorker().stateProperty().addListener((observable, oldValue, newValue) -> {
-            getWindow().setMember("app", this);
-        });
+        webView.getEngine().getLoadWorker().stateProperty()
+                .addListener((observable, oldValue, newValue) -> {
+                    getWindow().setMember("app", this);
+                });
 
         URL url = this.getClass().getResource("/hterm.html");
         webEngine().load(url.toString());
@@ -196,21 +198,9 @@ public class TerminalTab extends Tab {
             try {
                 initializeProcess();
             } catch (Exception e) {
-                 e.printStackTrace();
+                e.printStackTrace();
             }
 
-        });
-    }
-
-    public void onTerminalReady(Runnable onReadyAction) {
-        ThreadHelper.start(() -> {
-            try {
-                countDownLatch.await();
-            } catch (Exception e) {
-            }
-            if (Objects.nonNull(onReadyAction)) {
-                ThreadHelper.start(onReadyAction);
-            }
         });
     }
 
@@ -263,33 +253,25 @@ public class TerminalTab extends Tab {
         }
         Map<String, String> envs = new HashMap<>(System.getenv());
         envs.put("TERM", "xterm");
-
         System.setProperty("PTY_LIB_FOLDER", dataDir.resolve("libpty").toString());
-
         if (Objects.nonNull(terminalPath) && Files.exists(terminalPath)) {
             this.process = PtyProcess.exec(termCommand, envs, terminalPath.toString());
         } else {
             this.process = PtyProcess.exec(termCommand, envs);
         }
-
         process.setWinSize(new WinSize(columns, rows));
         this.inputReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         this.errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
         this.outputWriter = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
-
         ThreadHelper.start(() -> {
             printReader(inputReader);
         });
-
         ThreadHelper.start(() -> {
             printReader(errorReader);
         });
-
         focusCursor();
-
         countDownLatch.countDown();
         isTerminalReady = true;
-
         process.waitFor();
     }
 
@@ -361,7 +343,8 @@ public class TerminalTab extends Tab {
         final String[] charset = {null};
 
         try {
-            Process process = Runtime.getRuntime().exec(new String[]{termCommand[0], "-c", "locale charmap"});
+            Process process = Runtime.getRuntime()
+                    .exec(new String[]{termCommand[0], "-c", "locale charmap"});
 
             String result = new BufferedReader(new InputStreamReader(process.getInputStream()))
                     .lines().collect(Collectors.joining("\n"))

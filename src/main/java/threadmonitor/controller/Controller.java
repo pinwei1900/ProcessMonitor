@@ -21,6 +21,7 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart.Data;
 import javafx.scene.chart.XYChart.Series;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -31,6 +32,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
+import javafx.util.Callback;
 import threadmonitor.config.TerminalConfig;
 import threadmonitor.entry.Command;
 import threadmonitor.entry.Progress;
@@ -71,7 +73,7 @@ public class Controller {
     @FXML
     private TabPane prosessInfo;
     @FXML
-    private ListView<String> commandList;
+    private ListView<Command> commandList;
     @FXML
     private TextArea sysInfoArea;
 
@@ -169,12 +171,7 @@ public class Controller {
         TabThread exitOnTabClose = new TabThread(tab, pid);
         exitOnTabClose.start();
 
-        tab.setOnCloseRequest(new EventHandler<Event>() {
-            @Override
-            public void handle(Event event) {
-                exitOnTabClose.cancel();
-            }
-        });
+        tab.setOnCloseRequest(event -> exitOnTabClose.cancel());
         return tab;
     }
 
@@ -198,13 +195,31 @@ public class Controller {
         TerminalTab terminal = terminalBuilder.newTerminal();
         consoleTabPane.getTabs().add(terminal);
 
+        commandList.setCellFactory(new Callback<ListView<Command>, ListCell<Command>>() {
+            @Override
+            public ListCell<Command> call(ListView<Command> param) {
+                ListCell<Command> cell = new ListCell<Command>(){
+                    @Override
+                    protected void updateItem(Command item, boolean empty) {
+                        super.updateItem(item, empty);
+                            if (item != null){
+                            setText(item.getCommand() + " : " + item.getCommand_desc());
+                        }
+                        if (item == null){
+                            setText("");
+                        }
+                    }
+                };
+                return cell;
+            }
+        });
         addListening();
         loadConmmand();
     }
 
     private void loadConmmand() {
         List<Command> commands = dbService.queryAllCommand();
-        ObservableList<String> strList = FXCollections.observableArrayList(getCommands(commands));
+        ObservableList<Command> strList = FXCollections.observableArrayList(commands);
         commandList.setItems(strList);
     }
 
@@ -212,16 +227,8 @@ public class Controller {
         Platform.runLater(() -> {
             List<Command> commands = dbService.queryAllCommand();
             commandList.getItems().clear();
-            commandList.getItems().addAll(getCommands(commands));
+            commandList.getItems().addAll(commands);
         });
-    }
-
-    private List<String> getCommands(List<Command> commands) {
-        List<String> result = new ArrayList<>();
-        for (Command command : commands) {
-            result.add(command.getCommand());
-        }
-        return result;
     }
 
     private void addListening() {
@@ -243,7 +250,7 @@ public class Controller {
         });
         commandList.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
-                String item = commandList.getSelectionModel().getSelectedItem();
+                String item = commandList.getSelectionModel().getSelectedItem().getCommand();
                 TerminalTab current = (TerminalTab) consoleTabPane.getSelectionModel().getSelectedItem();
                 try {
                     current.command(item);
@@ -272,10 +279,28 @@ public class Controller {
         command.clear();
         commandDesc.clear();
         dbService.insertCommand(cmdStr,cmdDesc);
-
         updateCommand();
     }
 
+
+    @FXML
+    public void delCommand() {
+        Integer id = commandList.getSelectionModel().getSelectedItem().getId();
+        dbService.delCommand(id);
+        commandList.getItems().remove(commandList.getSelectionModel().getSelectedItem());
+
+        System.out.println(commandList.getItems().size());
+    }
+
+    public void queryCommand(ActionEvent actionEvent) {
+
+    }
+
+    @FXML
+    public void onCommandEnter() {
+        saveCommand();
+        command.requestFocus();
+    }
 
     private class TabThread extends Thread {
 

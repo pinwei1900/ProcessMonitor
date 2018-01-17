@@ -16944,5 +16944,3 @@ lib.resource.add('hterm/git/HEAD', 'text/plain',
     '49f8641dd055afaad9eadcd8553804eff0dd2637' +
     ''
 );
-
-

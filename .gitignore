@@ -5,3 +5,4 @@
 /target/classes/fxml
 target
 ThreadMonitor.db
+sqlite3.exe

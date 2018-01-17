@@ -3,8 +3,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.kodedu.terminalfx</groupId>
-    <artifactId>terminalfx</artifactId>
+    <groupId>com.songlin.processMonitor</groupId>
+    <artifactId>processMonitor</artifactId>
     <version>1.0.4</version>
     <packaging>jar</packaging>
 
@@ -12,11 +12,11 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <mainClass>com.kodedu.terminalfx.TerminalAppStarter</mainClass>
+        <mainClass>threadmonitor.MainUI</mainClass>
     </properties>
 
     <organization>
-        <name>TerminalFX</name>
+        <name>ProcessMonitor</name>
     </organization>
 
     <dependencies>

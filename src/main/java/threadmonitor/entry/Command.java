@@ -11,12 +11,22 @@ package threadmonitor.entry;
  * @Version 1.0.0
  */
 public class Command {
+    private Integer id;
     private String command;
     private String command_desc;
 
-    public Command(String command, String desc) {
+    public Command(Integer id, String command, String desc) {
+        this.id = id;
         this.command = command;
         this.command_desc = desc;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getCommand() {
