@@ -25,7 +25,7 @@ public class SqliteHelper {
     private Connection connection;
     private Statement statement;
     private ResultSet resultSet;
-    private String dbFilePath = "ThreadMonitor.db";
+    private String dbFilePath = "db/ThreadMonitor.db";
 
     /**
      * 构造函数
@@ -46,7 +46,7 @@ public class SqliteHelper {
      */
     public Connection getConnection(String dbFilePath) throws ClassNotFoundException, SQLException {
         Class.forName("org.sqlite.JDBC");
-        Connection conn = DriverManager.getConnection("jdbc:sqlite:" + dbFilePath);
+        Connection conn = DriverManager.getConnection("jdbc:sqlite::resource:" + dbFilePath);
         return conn;
     }
 

@@ -16,11 +16,22 @@ import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
 public class SshService {
 
     private static SSHClient ssh;
-    private static final String host = "119.23.200.215";
-    private static final String username = "root";
-    private static final String password = "Hsl13571676728";
+    private String host = "119.23.200.215";
+    private String username = "root";
+    private String password = "Hsl13571676728";
 
     public SshService() {
+        initSsh();
+    }
+
+    public SshService(String host,String username,String password){
+        this.host = host;
+        this.username = username;
+        this.password = password;
+        initSsh();
+    }
+
+    private void initSsh(){
         DefaultConfig defaultConfig = new DefaultConfig();
         defaultConfig.setKeepAliveProvider(KeepAliveProvider.KEEP_ALIVE);
         ssh = new SSHClient(defaultConfig);
@@ -32,7 +43,14 @@ public class SshService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
+    public void close(){
+        try {
+            ssh.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public String excute(String command) {
@@ -53,22 +71,6 @@ public class SshService {
         SshService sshService = new SshService();
         String result = sshService.querySysInfo();
         System.out.println(result);
-    }
-
-
-    public void ConsoleTTY() {
-        try (Session session = ssh.startSession()) {
-            session.allocateDefaultPTY();
-            final Shell shell = session.startShell();
-            new StreamCopier(shell.getInputStream(), System.out, LoggerFactory.DEFAULT)
-                    .bufSize(shell.getLocalMaxPacketSize()).spawn("stdout");
-            new StreamCopier(shell.getErrorStream(), System.err, LoggerFactory.DEFAULT)
-                    .bufSize(shell.getLocalMaxPacketSize()).spawn("stderr");
-            new StreamCopier(System.in, shell.getOutputStream(), LoggerFactory.DEFAULT)
-                    .bufSize(shell.getRemoteMaxPacketSize()).copy();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public String querySysInfo() {

@@ -26,7 +26,7 @@ import threadmonitor.util.Utils;
 public class DbService {
 
     private SqliteHelper sqliteHelper;
-    private String dbFilePath = "ThreadMonitor.db";
+    private String dbFilePath = "db/ThreadMonitor.db";
 
     public DbService(){
         try {

@@ -27,7 +27,7 @@ public class MainUI extends Application{
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Main.fxml"));
         Parent root = loader.load();
         Scene scene = new Scene(root);
-        primaryStage.setTitle("Hello World");
+        primaryStage.setTitle("Monitor");
         primaryStage.setScene(scene);
         primaryStage.show();
 
@@ -35,15 +35,6 @@ public class MainUI extends Application{
         controller.setProsessService(prosessService);
 
         startProsessThread(controller);
-    }
-
-    private void startConsoleThread() {
-        new Thread(() -> {
-            try {
-                sshService.ConsoleTTY();
-            } catch (Throwable ignored) {
-            }
-        },"console").start();
     }
 
     private void startProsessThread(Controller controller) {

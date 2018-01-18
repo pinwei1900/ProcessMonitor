@@ -13,6 +13,12 @@ import threadmonitor.util.Utils;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TerminalConfig {
 
+    public TerminalConfig() {
+
+    }
+    public TerminalConfig(String host, String username) {
+        windowsTerminalStarter = "src\\main\\resources\\ssh\\ssh.exe " + username + "@" + host;
+    }
     @JsonProperty(value = "send-encoding")
     private String sendEncoding = "raw";
 
@@ -65,7 +71,7 @@ public class TerminalConfig {
     private String userCss = "data:text/plain;base64," + "eC1zY3JlZW4geyBjdXJzb3I6IGF1dG87IH0=";
 
     @JsonIgnore
-    private String windowsTerminalStarter = "cmd.exe";//"F:\\songlin\\TerminalFX\\src\\main\\resources\\ssh\\ssh.exe webexecer@119.23.200.215";
+    private String windowsTerminalStarter = "cmd.exe";//"src\\main\\resources\\ssh\\ssh.exe webexecer@119.23.200.215";
 
     @JsonIgnore
     private String unixTerminalStarter = "/bin/bash -i";
@@ -236,34 +242,77 @@ public class TerminalConfig {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         TerminalConfig that = (TerminalConfig) o;
 
-        if (useDefaultWindowCopy != that.useDefaultWindowCopy) return false;
-        if (clearSelectionAfterCopy != that.clearSelectionAfterCopy) return false;
-        if (copyOnSelect != that.copyOnSelect) return false;
-        if (ctrlCCopy != that.ctrlCCopy) return false;
-        if (ctrlVPaste != that.ctrlVPaste) return false;
-        if (fontSize != that.fontSize) return false;
-        if (cursorBlink != that.cursorBlink) return false;
-        if (scrollbarVisible != that.scrollbarVisible) return false;
-        if (enableClipboardNotice != that.enableClipboardNotice) return false;
-        if (Double.compare(that.scrollWhellMoveMultiplier, scrollWhellMoveMultiplier) != 0) return false;
-        if (sendEncoding != null ? !sendEncoding.equals(that.sendEncoding) : that.sendEncoding != null) return false;
-        if (receiveEncoding != null ? !receiveEncoding.equals(that.receiveEncoding) : that.receiveEncoding != null)
+        if (useDefaultWindowCopy != that.useDefaultWindowCopy) {
             return false;
-        if (cursorColor != null ? !cursorColor.equals(that.cursorColor) : that.cursorColor != null) return false;
-        if (backgroundColor != null ? !backgroundColor.equals(that.backgroundColor) : that.backgroundColor != null)
+        }
+        if (clearSelectionAfterCopy != that.clearSelectionAfterCopy) {
             return false;
-        if (foregroundColor != null ? !foregroundColor.equals(that.foregroundColor) : that.foregroundColor != null)
+        }
+        if (copyOnSelect != that.copyOnSelect) {
             return false;
-        if (fontFamily != null ? !fontFamily.equals(that.fontFamily) : that.fontFamily != null) return false;
-        if (userCss != null ? !userCss.equals(that.userCss) : that.userCss != null) return false;
-        if (windowsTerminalStarter != null ? !windowsTerminalStarter.equals(that.windowsTerminalStarter) : that.windowsTerminalStarter != null)
+        }
+        if (ctrlCCopy != that.ctrlCCopy) {
             return false;
-        return unixTerminalStarter != null ? unixTerminalStarter.equals(that.unixTerminalStarter) : that.unixTerminalStarter == null;
+        }
+        if (ctrlVPaste != that.ctrlVPaste) {
+            return false;
+        }
+        if (fontSize != that.fontSize) {
+            return false;
+        }
+        if (cursorBlink != that.cursorBlink) {
+            return false;
+        }
+        if (scrollbarVisible != that.scrollbarVisible) {
+            return false;
+        }
+        if (enableClipboardNotice != that.enableClipboardNotice) {
+            return false;
+        }
+        if (Double.compare(that.scrollWhellMoveMultiplier, scrollWhellMoveMultiplier) != 0) {
+            return false;
+        }
+        if (sendEncoding != null ? !sendEncoding.equals(that.sendEncoding)
+                : that.sendEncoding != null) {
+            return false;
+        }
+        if (receiveEncoding != null ? !receiveEncoding.equals(that.receiveEncoding)
+                : that.receiveEncoding != null) {
+            return false;
+        }
+        if (cursorColor != null ? !cursorColor.equals(that.cursorColor)
+                : that.cursorColor != null) {
+            return false;
+        }
+        if (backgroundColor != null ? !backgroundColor.equals(that.backgroundColor)
+                : that.backgroundColor != null) {
+            return false;
+        }
+        if (foregroundColor != null ? !foregroundColor.equals(that.foregroundColor)
+                : that.foregroundColor != null) {
+            return false;
+        }
+        if (fontFamily != null ? !fontFamily.equals(that.fontFamily) : that.fontFamily != null) {
+            return false;
+        }
+        if (userCss != null ? !userCss.equals(that.userCss) : that.userCss != null) {
+            return false;
+        }
+        if (windowsTerminalStarter != null ? !windowsTerminalStarter
+                .equals(that.windowsTerminalStarter) : that.windowsTerminalStarter != null) {
+            return false;
+        }
+        return unixTerminalStarter != null ? unixTerminalStarter.equals(that.unixTerminalStarter)
+                : that.unixTerminalStarter == null;
 
     }
 
@@ -289,7 +338,8 @@ public class TerminalConfig {
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         result = 31 * result + (fontFamily != null ? fontFamily.hashCode() : 0);
         result = 31 * result + (userCss != null ? userCss.hashCode() : 0);
-        result = 31 * result + (windowsTerminalStarter != null ? windowsTerminalStarter.hashCode() : 0);
+        result = 31 * result + (windowsTerminalStarter != null ? windowsTerminalStarter.hashCode()
+                : 0);
         result = 31 * result + (unixTerminalStarter != null ? unixTerminalStarter.hashCode() : 0);
         return result;
     }
