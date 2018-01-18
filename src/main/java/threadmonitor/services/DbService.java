@@ -14,6 +14,7 @@ import javafx.collections.ObservableList;
 import threadmonitor.db.SqliteHelper;
 import threadmonitor.entry.Command;
 import threadmonitor.entry.Progress;
+import threadmonitor.entry.SSHConnInfo;
 import threadmonitor.util.JsonUtil;
 import threadmonitor.util.Utils;
 
@@ -28,44 +29,43 @@ public class DbService {
     private SqliteHelper sqliteHelper;
     private String dbFilePath = "db/ThreadMonitor.db";
 
-    public DbService(){
+    public DbService() {
         try {
             sqliteHelper = new SqliteHelper(dbFilePath);
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
-
     /**
      * 创建数据库
-     * @param args
      */
     public static void main(String[] args) {
         createDB();
     }
 
-    public synchronized static DbService createDB(){
+    public synchronized static DbService createDB() {
         return new DbService();
     }
 
     public synchronized void insertProsess(ObservableList<Progress> progresses) {
         try {
-            String sql = "INSERT INTO prosessTable (time, value) VALUES ('" + Utils.dateToString(new Date()) + "','"+ JsonUtil.serialize(progresses) +"')";
+            String sql = "INSERT INTO prosessTable (time, value) VALUES ('" + Utils
+                    .dateToString(new Date()) + "','" + JsonUtil.serialize(progresses) + "')";
             sqliteHelper.executeUpdate(sql);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public synchronized List<Map<String ,Progress>>  getRecentRecord() {
+    public synchronized List<Map<String, Progress>> getRecentRecord() {
         String sql = "SELECT * FROM prosessTable ORDER BY time DESC LIMIT 8";
         try {
-            List<Map<String ,Progress>> b = sqliteHelper.executeQuery(sql, (resultSet, i) -> {
-                HashMap<String ,Progress> mapResult = new HashMap<>();
+            List<Map<String, Progress>> b = sqliteHelper.executeQuery(sql, (resultSet, i) -> {
+                HashMap<String, Progress> mapResult = new HashMap<>();
                 String json = resultSet.getString(3);
                 Progress[] jsonList = JsonUtil.fromJson(json, Progress[].class);
-                for (Progress p : jsonList){
-                    mapResult.put(p.getPidColumn(),p);
+                for (Progress p : jsonList) {
+                    mapResult.put(p.getPidColumn(), p);
                 }
                 return mapResult;
             });
@@ -78,7 +78,9 @@ public class DbService {
 
     public void insertCommand(String cmdStr, String cmdDesc) {
         try {
-            String sql = "INSERT INTO commandTabel (command, command_desc) VALUES ('"+ cmdStr +"','"+ cmdDesc +"');";
+            String sql =
+                    "INSERT INTO commandTabel (command, command_desc) VALUES ('" + cmdStr + "','"
+                            + cmdDesc + "');";
             sqliteHelper.executeUpdate(sql);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -87,19 +89,35 @@ public class DbService {
         }
     }
 
-    public List<Command> queryAllCommand(){
+    public List<Command> queryAllCommand() {
         String sql = "SELECT * FROM commandTabel;";
         try {
-            List<Command> commands = sqliteHelper.executeQuery(sql,(resultSet, rowNum) -> {
-                        Integer id = resultSet.getInt(1);
-                        String command = resultSet.getString(2);
-                        String desc = resultSet.getString(3);
-                        return new Command(id,command,desc);
-                    });
+            List<Command> commands = sqliteHelper.executeQuery(sql, (resultSet, rowNum) -> {
+                Integer id = resultSet.getInt(1);
+                String command = resultSet.getString(2);
+                String desc = resultSet.getString(3);
+                return new Command(id, command, desc);
+            });
             return commands;
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        }
+        return Collections.EMPTY_LIST;
+    }
+
+    public List<SSHConnInfo> queryAllConnect() {
+        String sql = "SELECT * FROM connectInfoTabel;";
+        try {
+            List<SSHConnInfo> connInfos = sqliteHelper.executeQuery(sql,(resultSet,rowNum) -> {
+                Integer id = resultSet.getInt(1);
+                String ip = resultSet.getString(2);
+                String username = resultSet.getString(3);
+                String password = resultSet.getString(4);
+                String desc = resultSet.getString(5);
+                return new SSHConnInfo(id,ip,username,password,desc);
+            });
+            return connInfos;
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return Collections.EMPTY_LIST;
@@ -108,6 +126,19 @@ public class DbService {
     public void delCommand(Integer id) {
         try {
             String sql = "DELETE FROM commandTabel WHERE id = " + id;
+            sqliteHelper.executeUpdate(sql);
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void insertConnect(SSHConnInfo sshConnInfo) {
+        try {
+            String sql = "INSERT INTO connectInfoTabel (ip, username, password, desc) VALUES ('"
+                    + sshConnInfo.getConnectIp() +"','"
+                    + sshConnInfo.getConnectUser() + "','"
+                    + sshConnInfo.getConnectPwd() + "','"
+                    + sshConnInfo.getConnectDesc() + "');";
             sqliteHelper.executeUpdate(sql);
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();

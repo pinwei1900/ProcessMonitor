@@ -36,6 +36,7 @@ import javafx.util.Callback;
 import threadmonitor.config.TerminalConfig;
 import threadmonitor.entry.Command;
 import threadmonitor.entry.Progress;
+import threadmonitor.entry.SSHConnInfo;
 import threadmonitor.services.DbService;
 import threadmonitor.services.ProsessService;
 import threadmonitor.services.SshService;
@@ -44,6 +45,17 @@ import threadmonitor.view.TerminalBuilder;
 import threadmonitor.view.TerminalTab;
 
 public class Controller {
+
+    @FXML
+    private ListView<SSHConnInfo> connectList;
+    @FXML
+    private  TextField connectUser;
+    @FXML
+    private  TextField connectPwd;
+    @FXML
+    private TextField connectDesc;
+    @FXML
+    private TextField connectIp;
     @FXML
     private TextField command;
     @FXML
@@ -202,7 +214,7 @@ public class Controller {
                     @Override
                     protected void updateItem(Command item, boolean empty) {
                         super.updateItem(item, empty);
-                            if (item != null){
+                        if (item != null){
                             setText(item.getCommand() + " : " + item.getCommand_desc());
                         }
                         if (item == null){
@@ -213,8 +225,35 @@ public class Controller {
                 return cell;
             }
         });
+
+        connectList.setCellFactory(new Callback<ListView<SSHConnInfo>, ListCell<SSHConnInfo>>() {
+            @Override
+            public ListCell<SSHConnInfo> call(ListView<SSHConnInfo> param) {
+                ListCell<SSHConnInfo> connInfo = new ListCell<SSHConnInfo>(){
+                    @Override
+                    protected void updateItem(SSHConnInfo item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item != null){
+                            setText(item.getConnectIp() + " : " + item.getConnectUser());
+                        }
+                        if (item == null){
+                            setText("");
+                        }
+                    }
+                };
+                return connInfo;
+            }
+        });
+
         addListening();
         loadConmmand();
+        loadConnects();
+    }
+
+    private void loadConnects() {
+        List<SSHConnInfo> connInfos = dbService.queryAllConnect();
+        ObservableList<SSHConnInfo> connList = FXCollections.observableArrayList(connInfos);
+        connectList.setItems(connList);
     }
 
     private void loadConmmand() {
@@ -228,6 +267,14 @@ public class Controller {
             List<Command> commands = dbService.queryAllCommand();
             commandList.getItems().clear();
             commandList.getItems().addAll(commands);
+        });
+    }
+
+    private void updateConnect() {
+        Platform.runLater(() -> {
+            List<SSHConnInfo> connInfos = dbService.queryAllConnect();
+            connectList.getItems().clear();
+            connectList.getItems().addAll(connInfos);
         });
     }
 
@@ -300,6 +347,20 @@ public class Controller {
     public void onCommandEnter() {
         saveCommand();
         command.requestFocus();
+    }
+
+    @FXML
+    public void addConnectList(ActionEvent actionEvent) {
+        String ip = connectIp.getText();
+        String username = connectUser.getText();
+        String password = connectUser.getText();
+        String desc = connectDesc.getText();
+        connectIp.clear();
+        connectUser.clear();
+        connectPwd.clear();
+        commandDesc.clear();
+        dbService.insertConnect(new SSHConnInfo(ip,username,password,desc));
+        updateConnect();
     }
 
     private class TabThread extends Thread {

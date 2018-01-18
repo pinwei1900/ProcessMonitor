@@ -32,3 +32,16 @@ create table systemInfoTabel
 )
 ;
 
+-- auto-generated definition
+CREATE TABLE connectInfoTabel
+(
+  id       INTEGER
+    PRIMARY KEY
+  AUTOINCREMENT,
+  ip       TEXT NOT NULL,
+  username TEXT NOT NULL,
+  password TEXT NOT NULL,
+  desc     TEXT
+);
+
+
