@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import threadmonitor.entry.Progress;
+import threadmonitor.entry.SSHConnInfo;
 
 /**
  * @Description
@@ -24,8 +25,26 @@ public class ProsessService {
     SshService sshService = new SshService();
     DbService dbService = new DbService();
 
-    private BlockingQueue<ObservableList<Progress>> blockingQueue = new ArrayBlockingQueue<ObservableList<Progress>>(
-            10);
+    public ProsessService(){
+
+    }
+
+    public SshService getSshService() {
+        return sshService;
+    }
+
+    public DbService getDbService() {
+        return dbService;
+    }
+
+    /**
+     * 通过连接信息建立ssh连接
+     */
+    public ProsessService(SSHConnInfo connInfo){
+
+    }
+
+    private BlockingQueue<ObservableList<Progress>> blockingQueue = new ArrayBlockingQueue<>(10);
 
     public void init() {
         new Thread(new Runnable() {

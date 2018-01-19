@@ -8,9 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import threadmonitor.controller.Controller;
-import threadmonitor.services.ProsessService;
-import threadmonitor.services.SshService;
+
 
 /**
  * @Description
@@ -19,8 +17,6 @@ import threadmonitor.services.SshService;
  * @Version 1.0.0
  */
 public class MainUI extends Application{
-    private SshService sshService = new SshService();
-    private ProsessService prosessService = new ProsessService();
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -30,21 +26,6 @@ public class MainUI extends Application{
         primaryStage.setTitle("Monitor");
         primaryStage.setScene(scene);
         primaryStage.show();
-
-        Controller controller = loader.getController();
-        controller.setProsessService(prosessService);
-
-        startProsessThread(controller);
-    }
-
-    private void startProsessThread(Controller controller) {
-        new Thread(() -> {
-            try {
-                prosessService.init();
-                controller.init();
-            } catch (Throwable ignored) {
-            }
-        },"prosess").start();
     }
 
     public static void main(String[] args) {
