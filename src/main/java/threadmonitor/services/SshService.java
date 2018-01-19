@@ -12,22 +12,19 @@ import net.schmizz.sshj.connection.channel.direct.Session;
 import net.schmizz.sshj.connection.channel.direct.Session.Command;
 import net.schmizz.sshj.connection.channel.direct.Session.Shell;
 import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
+import threadmonitor.entry.SSHConnInfo;
 
 public class SshService {
 
     private static SSHClient ssh;
-    private String host = "119.23.200.215";
-    private String username = "root";
-    private String password = "Hsl13571676728";
+    private String host;
+    private String username;
+    private String password;
 
-    public SshService() {
-        initSsh();
-    }
-
-    public SshService(String host,String username,String password){
-        this.host = host;
-        this.username = username;
-        this.password = password;
+    public SshService(SSHConnInfo connInfo) {
+        this.host = connInfo.getConnectIp();
+        this.username = connInfo.getConnectUser();
+        this.password = connInfo.getConnectPwd();
         initSsh();
     }
 
@@ -65,12 +62,6 @@ public class SshService {
             e.printStackTrace();
         }
         return "error";
-    }
-
-    public static void main(String[] args) {
-        SshService sshService = new SshService();
-        String result = sshService.querySysInfo();
-        System.out.println(result);
     }
 
     public String querySysInfo() {

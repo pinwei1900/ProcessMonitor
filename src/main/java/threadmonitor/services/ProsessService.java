@@ -22,11 +22,11 @@ import threadmonitor.entry.SSHConnInfo;
  */
 public class ProsessService {
 
-    SshService sshService = new SshService();
-    DbService dbService = new DbService();
+    private final SshService sshService;
+    private final DbService dbService = new DbService();
 
-    public ProsessService(){
-
+    public ProsessService(SSHConnInfo connInfo){
+        sshService = new SshService(connInfo);
     }
 
     public SshService getSshService() {
@@ -35,13 +35,6 @@ public class ProsessService {
 
     public DbService getDbService() {
         return dbService;
-    }
-
-    /**
-     * 通过连接信息建立ssh连接
-     */
-    public ProsessService(SSHConnInfo connInfo){
-
     }
 
     private BlockingQueue<ObservableList<Progress>> blockingQueue = new ArrayBlockingQueue<>(10);

@@ -76,7 +76,7 @@ public class Controller {
     public void addConnectList() {
         String ip = connectIp.getText();
         String username = connectUser.getText();
-        String password = connectUser.getText();
+        String password = connectPwd.getText();
         String desc = connectDesc.getText();
         connectIp.clear();
         connectUser.clear();
