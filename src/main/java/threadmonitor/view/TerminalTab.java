@@ -2,7 +2,7 @@ package threadmonitor.view;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.net.URL;
-import javafx.concurrent.Worker.State;
+
 import threadmonitor.annotation.WebkitCall;
 import threadmonitor.config.DefaultTabNameGenerator;
 import threadmonitor.config.TabNameGenerator;
@@ -158,6 +158,7 @@ public class TerminalTab extends Tab {
 
     public void newTerminal(ActionEvent... actionEvent) {
         TerminalConfig defaultConfig = new TerminalConfig();
+        defaultConfig.setWindowsTerminalStarter(terminalConfig.getWindowsTerminalStarter());
         TerminalBuilder terminalBuilder = new TerminalBuilder(defaultConfig);
         TerminalTab terminal = terminalBuilder.newTerminal();
 

@@ -41,7 +41,7 @@ public class ProcessTab extends Tab {
 
         this.setText(pid);
         GridPane gridPane = new GridPane();
-        List<Map<String, Progress>> records = prosessService.getDbService().getRecentRecord();
+        List<Map<String, Progress>> records = prosessService.getDbService().getRecentRecord(prosessService.getConnInfo().getConnectIp());
         HashMap<String, Series> tabMap = new HashMap<>();
         Series memSeries = new Series();
         memSeries.getData().addAll(getSeriesData(records, pid, "mem"));
@@ -123,7 +123,7 @@ public class ProcessTab extends Tab {
         @Override
         public void run() {
             while (isrun.get()) {
-                List<Map<String, Progress>> records = prosessService.getDbService().getRecentRecord();
+                List<Map<String, Progress>> records = prosessService.getDbService().getRecentRecord(prosessService.getConnInfo().getConnectIp());
                 HashMap<String, Series> tabMap = seriesMap.get(tab);
 
                 Platform.runLater(() -> {
@@ -139,7 +139,7 @@ public class ProcessTab extends Tab {
                 });
 
                 try {
-                    Thread.sleep(TimeUnit.SECONDS.toMillis(1));
+                    Thread.sleep(TimeUnit.SECONDS.toMillis(5));
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

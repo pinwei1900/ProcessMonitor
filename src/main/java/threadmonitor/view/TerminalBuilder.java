@@ -3,6 +3,7 @@ package threadmonitor.view;
 import threadmonitor.config.DefaultTabNameGenerator;
 import threadmonitor.config.TerminalConfig;
 import threadmonitor.config.TabNameGenerator;
+import threadmonitor.entry.SSHConnInfo;
 
 import java.nio.file.Path;
 import java.util.Objects;

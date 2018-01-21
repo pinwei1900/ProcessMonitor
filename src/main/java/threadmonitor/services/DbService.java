@@ -47,22 +47,22 @@ public class DbService {
         return new DbService();
     }
 
-    public synchronized void insertProsess(ObservableList<Progress> progresses) {
+    public synchronized void insertProsess(ObservableList<Progress> progresses ,String ip) {
         try {
-            String sql = "INSERT INTO prosessTable (time, value) VALUES ('" + Utils
-                    .dateToString(new Date()) + "','" + JsonUtil.serialize(progresses) + "')";
+            String sql = "INSERT INTO prosessTable (time, ip, value) VALUES ('" + Utils
+                    .dateToString(new Date()) + "','" + ip + "','" + JsonUtil.serialize(progresses) + "')";
             sqliteHelper.executeUpdate(sql);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public synchronized List<Map<String, Progress>> getRecentRecord() {
-        String sql = "SELECT * FROM prosessTable ORDER BY time DESC LIMIT 8";
+    public synchronized List<Map<String, Progress>> getRecentRecord(String ip) {
+        String sql = "SELECT * FROM prosessTable WHERE ip = '" + ip + "' ORDER BY time DESC LIMIT 8";
         try {
             List<Map<String, Progress>> b = sqliteHelper.executeQuery(sql, (resultSet, i) -> {
                 HashMap<String, Progress> mapResult = new HashMap<>();
-                String json = resultSet.getString(3);
+                String json = resultSet.getString(4);
                 Progress[] jsonList = JsonUtil.fromJson(json, Progress[].class);
                 for (Progress p : jsonList) {
                     mapResult.put(p.getPidColumn(), p);
@@ -76,11 +76,10 @@ public class DbService {
         return Collections.emptyList();
     }
 
-    public void insertCommand(String cmdStr, String cmdDesc) {
+    public void insertCommand(String cmdStr, String cmdDesc ,String ip) {
         try {
             String sql =
-                    "INSERT INTO commandTabel (command, command_desc) VALUES ('" + cmdStr + "','"
-                            + cmdDesc + "');";
+                    "INSERT INTO commandTabel (ip ,command, command_desc) VALUES ('" + ip + "','" + cmdStr + "','" + cmdDesc + "');";
             sqliteHelper.executeUpdate(sql);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -89,13 +88,13 @@ public class DbService {
         }
     }
 
-    public List<Command> queryAllCommand() {
-        String sql = "SELECT * FROM commandTabel;";
+    public List<Command> queryAllCommand(String ip) {
+        String sql = "SELECT * FROM commandTabel WHERE ip = '" + ip + "';";
         try {
             List<Command> commands = sqliteHelper.executeQuery(sql, (resultSet, rowNum) -> {
                 Integer id = resultSet.getInt(1);
-                String command = resultSet.getString(2);
-                String desc = resultSet.getString(3);
+                String command = resultSet.getString(3);
+                String desc = resultSet.getString(4);
                 return new Command(id, command, desc);
             });
             return commands;

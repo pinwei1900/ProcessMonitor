@@ -42,6 +42,8 @@ import threadmonitor.services.ProsessService;
 
 public class MainTab extends Tab {
 
+    private final SSHConnInfo connInfo;
+
     private TabPane prosessInfo;
     private TabPane consoleTabPane;
     private TableView progressListView;
@@ -62,7 +64,8 @@ public class MainTab extends Tab {
     private ListView<Command> commandList;
 
     public MainTab(SSHConnInfo connInfo) {
-        prosessService = new ProsessService(connInfo);
+        this.connInfo = connInfo;
+        this.prosessService = new ProsessService(connInfo);
 
         initView();
         initComponent();
@@ -133,12 +136,12 @@ public class MainTab extends Tab {
             }
         });
 
-        TerminalConfig defaultConfig = new TerminalConfig();
+        TerminalConfig defaultConfig = new TerminalConfig(connInfo.getConnectIp(),connInfo.getConnectUser());
         TerminalBuilder terminalBuilder = new TerminalBuilder(defaultConfig);
         TerminalTab terminal = terminalBuilder.newTerminal();
         consoleTabPane.getTabs().add(terminal);
 
-        List<Command> commands = prosessService.getDbService().queryAllCommand();
+        List<Command> commands = prosessService.getDbService().queryAllCommand(connInfo.getConnectIp());
         ObservableList<Command> strList = FXCollections.observableArrayList(commands);
         commandList.setItems(strList);
     }
@@ -169,7 +172,7 @@ public class MainTab extends Tab {
 
     private void updateCommand(){
         Platform.runLater(() -> {
-            List<Command> commands = prosessService.getDbService().queryAllCommand();
+            List<Command> commands = prosessService.getDbService().queryAllCommand(connInfo.getConnectIp());
             commandList.getItems().clear();
             commandList.getItems().addAll(commands);
         });
@@ -180,7 +183,7 @@ public class MainTab extends Tab {
         String cmdDesc = commandDesc.getText();
         command.clear();
         commandDesc.clear();
-        prosessService.getDbService().insertCommand(cmdStr,cmdDesc);
+        prosessService.getDbService().insertCommand(cmdStr,cmdDesc,connInfo.getConnectIp());
         updateCommand();
     }
 

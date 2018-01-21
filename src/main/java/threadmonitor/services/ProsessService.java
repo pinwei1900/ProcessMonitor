@@ -24,9 +24,11 @@ public class ProsessService {
 
     private final SshService sshService;
     private final DbService dbService = new DbService();
+    private final SSHConnInfo connInfo;
 
     public ProsessService(SSHConnInfo connInfo){
-        sshService = new SshService(connInfo);
+        this.sshService = new SshService(connInfo);
+        this.connInfo = connInfo;
     }
 
     public SshService getSshService() {
@@ -37,17 +39,18 @@ public class ProsessService {
         return dbService;
     }
 
+    public SSHConnInfo getConnInfo() {
+        return connInfo;
+    }
+
     private BlockingQueue<ObservableList<Progress>> blockingQueue = new ArrayBlockingQueue<>(10);
 
     public void init() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    updateProgress();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+        new Thread(() -> {
+            try {
+                updateProgress();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }, "queryprosess").start();
     }
@@ -62,9 +65,9 @@ public class ProsessService {
                 progresses.add(convertToObsList(prosess));
             }
             blockingQueue.put(progresses);
-            dbService.insertProsess(progresses);
+            dbService.insertProsess(progresses ,connInfo.getConnectIp());
             try {
-                Thread.sleep(TimeUnit.SECONDS.toMillis(3));
+                Thread.sleep(TimeUnit.SECONDS.toMillis(10));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
