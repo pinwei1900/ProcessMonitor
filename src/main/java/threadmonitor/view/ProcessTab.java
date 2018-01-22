@@ -58,6 +58,7 @@ public class ProcessTab extends Tab {
         gridPane.add(cpuLineChart, 2, 1);
 
         TextArea processInfo = new TextArea();
+        processInfo.setEditable(false);
         processInfo.appendText(prosessService.getSshService().queryProcessInfo(getConmand(records, pid), pid));
 
         gridPane.add(processInfo, 1, 2, 2, 1);
