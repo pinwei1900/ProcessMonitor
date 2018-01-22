@@ -1,8 +1,14 @@
 package threadmonitor.util;
 
-import java.io.*;
-import java.nio.file.*;
-import java.util.*;
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by usta on 12.09.2016.
@@ -39,7 +45,8 @@ public class IOHelper {
 
     private static Set<String> getNativeFiles() {
         final Set<String> nativeFiles = new HashSet<>();
-        List<String> freebsd = Arrays.asList("libpty/freebsd/x86/libpty.so", "libpty/freebsd/x86_64/libpty.so");
+        List<String> freebsd = Arrays
+                .asList("libpty/freebsd/x86/libpty.so", "libpty/freebsd/x86_64/libpty.so");
         List<String> linux = Arrays.asList("libpty/linux/x86/libpty.so", "libpty/linux/x86_64/libpty.so");
         List<String> macosx = Arrays.asList("libpty/macosx/x86/libpty.dylib", "libpty/macosx/x86_64/libpty.dylib");
         List<String> win_x86 = Arrays.asList("libpty/win/x86/winpty.dll", "libpty/win/x86/winpty-agent.exe");
